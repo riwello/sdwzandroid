@@ -67,6 +67,7 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        //搜索按钮点击事件
         ivSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,6 +80,8 @@ public class SearchActivity extends BaseActivity {
             }
         });
 
+
+        //item 点击事件
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -95,6 +98,10 @@ public class SearchActivity extends BaseActivity {
     int page = 1;
     int size = 10;
 
+    /**
+     * http请求 搜索新闻
+     * @param word 关键字
+     */
     public void search(String word) {
         showLoding();
         HttpMethods.getInstance().getRestApi().searchNews(page, size, word)

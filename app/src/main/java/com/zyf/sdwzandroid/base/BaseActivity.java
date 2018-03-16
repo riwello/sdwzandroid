@@ -11,6 +11,8 @@ import butterknife.Unbinder;
 
 /**
  * Created by 46442 on 2018/3/12.
+ * 封装的activity父类
+ * 抽取重复代码
  */
 
 public abstract class BaseActivity extends AppCompatActivity {

@@ -76,6 +76,7 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
         showLoding();
+        //http请求  注册
         HttpMethods.getInstance().getRestApi().register(username, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

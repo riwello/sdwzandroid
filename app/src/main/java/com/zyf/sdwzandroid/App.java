@@ -6,6 +6,7 @@ import com.zyf.sdwzandroid.model.entity.User;
 
 /**
  * Created by 46442 on 2018/3/12.
+ * 自定义application
  */
 
 public class App extends Application {

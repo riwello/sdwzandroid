@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Created by 46442 on 2018/3/12.
+ * viewpager 适配器
  */
 
 public class CommonPagerAdapter extends FragmentPagerAdapter {

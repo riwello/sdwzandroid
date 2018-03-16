@@ -29,6 +29,7 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by 46442 on 2018/3/12.
+ * 新闻子页面
  */
 
 public class NewsTabFragment extends BaseFragment {
@@ -50,9 +51,9 @@ public class NewsTabFragment extends BaseFragment {
 
             @Override
             protected void convert(BaseViewHolder helper, News item) {
-                    helper.setText(R.id.tv_title,item.getTitle())
-                    .setText(R.id.tv_time,new SimpleDateFormat("yyyy-MM-dd").format(item.getTime()))
-                          ;
+                helper.setText(R.id.tv_title, item.getTitle())
+                        .setText(R.id.tv_time, new SimpleDateFormat("yyyy-MM-dd").format(item.getTime()))
+                ;
             }
         };
         recyclerview.setAdapter(mAdapter);
@@ -64,12 +65,14 @@ public class NewsTabFragment extends BaseFragment {
     @Override
     public void initData() {
 
+        //http get 请求获取新闻列表
         HttpMethods.getInstance().getRestApi().getNews(page, size, newsType)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<News>>() {
                     @Override
                     public void accept(List<News> news) throws Exception {
+                        //设置新闻列表数据
                         mAdapter.replaceData(news);
                     }
                 }, new Consumer<Throwable>() {
@@ -79,20 +82,22 @@ public class NewsTabFragment extends BaseFragment {
                     }
                 });
 
+        //item点击事件
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 News item = mAdapter.getItem(position);
 
+                //跳转到详情
                 Intent intent = new Intent(mContext, NewsDetailsActivity.class);
-                intent.putExtra("title",item.getTitle());
-                intent.putExtra("newsId",item.getId());
+                intent.putExtra("title", item.getTitle());
+                intent.putExtra("newsId", item.getId());
                 startActivity(intent);
             }
         });
     }
 
-
+    //设置新闻类型
     public Fragment setType(String newsType) {
         this.newsType = newsType;
 

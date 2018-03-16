@@ -73,6 +73,8 @@ public class LoginActivity extends BaseActivity {
         String account = etAccount.getText().toString();
         String password = etPassword.getText().toString();
         showLoding();
+
+        //http 请求  登录
         HttpMethods.getInstance().getRestApi().login(account, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -80,7 +82,10 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void accept(User user) throws Exception {
                         hideLoding();
+
+                        //设置用户数据到全局变量
                         App.getInstance().setUser(user);
+                        //跳转到主页
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }

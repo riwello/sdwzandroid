@@ -21,9 +21,11 @@ import retrofit2.http.Query;
 
 /**
  * Created by 46442 on 2018/3/12.
+ * http 接口地址
  */
 
 public interface RestApi {
+    //模拟器映射的电脑ip
     String HOST = "http://10.0.2.2:8111";
 
 

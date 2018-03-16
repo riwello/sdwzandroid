@@ -52,11 +52,15 @@ public class FileListActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        //设置recyclerview的布局方式(水平垂直)
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
+
+        //初始化适配器
         mAdapter = new BaseQuickAdapter<FileInfo, BaseViewHolder>(R.layout.item_file) {
 
             @Override
             protected void convert(BaseViewHolder helper, FileInfo item) {
+                //布局绑定数据
                 helper.setText(R.id.tv_file_name, item.getFileName())
                         .setText(R.id.tv_size, Formatter.formatFileSize(FileListActivity.this, item.getSize()))
                         .addOnClickListener(R.id.btn_download)
@@ -65,13 +69,14 @@ public class FileListActivity extends BaseActivity {
 
             }
         };
-
+        //设置适配器
         recyclerview.setAdapter(mAdapter);
     }
 
 
     @Override
     protected void initData() {
+        //http get请求获取文件列表
         HttpMethods.getInstance().getRestApi().getFileList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -87,14 +92,18 @@ public class FileListActivity extends BaseActivity {
                     }
                 });
 
-
+        //设置每个item的点击事件
         mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                //获取点击的item的数据
                 FileInfo item = mAdapter.getItem(position);
+
+                //下载文件
                 downloadFile(item.getUrl(), item.getFileName());
             }
         });
+        //6.0读写sd卡权限
         verifyStoragePermissions(this);
     }
 
@@ -103,7 +112,13 @@ public class FileListActivity extends BaseActivity {
     //上下文
 
 
-    //下载文件
+
+
+    /**
+     * 下载文件
+     * @param url  文件地址
+     * @param name 文件名
+     */
     public void downloadFile(String url, String name) {
 
         //创建下载任务

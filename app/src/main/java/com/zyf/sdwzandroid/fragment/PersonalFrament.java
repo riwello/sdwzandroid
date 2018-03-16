@@ -110,6 +110,9 @@ public class PersonalFrament extends BaseFragment {
 
     }
 
+    /**
+     * 设置名字
+     */
     public void showSetNameDialog() {
         final EditText editText = new EditText(mContext);
         new AlertDialog.Builder(mContext)
@@ -149,6 +152,9 @@ public class PersonalFrament extends BaseFragment {
                 }).show();
     }
 
+    /**
+     * 设置班级
+     */
     public void showSetClassNameDialog() {
         final EditText editText = new EditText(mContext);
         new AlertDialog.Builder(mContext)

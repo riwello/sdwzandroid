@@ -2,6 +2,7 @@ package com.zyf.sdwzandroid.model;
 
 /**
  * Created by 46442 on 2018/3/12.
+ * 封装的http请求工具类
  */
 
 import com.google.gson.Gson;

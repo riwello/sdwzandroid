@@ -52,7 +52,7 @@ public class NewsDetailsActivity extends BaseActivity {
         //获取点击新闻列表item时 intent过来的数据
         newsId = getIntent().getIntExtra("newsId", -1);
         title = getIntent().getStringExtra("title");
-
+        //设置标题
         tvTitle.setText(title);
 
         //收藏按钮点击事件
@@ -84,6 +84,7 @@ public class NewsDetailsActivity extends BaseActivity {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         String string = responseBody.string();
+                        //webview 加载http请求获得 的html文档
                         webview.loadDataWithBaseURL(null, string, "text/html", "utf-8", null);
 
                     }
@@ -96,8 +97,7 @@ public class NewsDetailsActivity extends BaseActivity {
 
 
 
-        //获取当前新闻是否被收藏
-
+        //获取 当前新闻是否被收藏
         HttpMethods.getInstance().getRestApi().getCollect(username, newsId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -115,6 +115,9 @@ public class NewsDetailsActivity extends BaseActivity {
                 });
     }
 
+    /**
+     * 取消收藏
+     */
     private void cancelCollect() {
 
         HttpMethods.getInstance().getRestApi().cancelCollect(username,newsId)

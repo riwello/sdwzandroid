@@ -69,6 +69,7 @@ public class NotificationFragment extends BaseFragment {
     }
 
     public void showDialog() {
+        //初始化dialog 弹窗
         final EditText editText = new EditText(mContext);
         new AlertDialog.Builder(mContext)
                 .setTitle("发布消息")
@@ -79,7 +80,7 @@ public class NotificationFragment extends BaseFragment {
 
                         if (editText.length()==0)editText.setError("内容不能为空");
                         String username = App.getInstance().getUser().getUsername();
-
+                        //http请求  发布通知
                         HttpMethods.getInstance().getRestApi().addNotification(username,editText.getText().toString())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -87,6 +88,7 @@ public class NotificationFragment extends BaseFragment {
                             @Override
                             public void accept(ResponseBody responseBody) throws Exception {
                                 Toast.makeText(mContext, "发布成功", Toast.LENGTH_SHORT).show();
+                                //更新通知列表
                                 getNotificationList();
                                 dialogInterface.dismiss();
                             }
@@ -113,6 +115,9 @@ public class NotificationFragment extends BaseFragment {
         getNotificationList();
     }
 
+    /**
+     * 获取通知列表
+     */
     public void getNotificationList(){
         HttpMethods.getInstance().getRestApi().getNotificationList()
                 .subscribeOn(Schedulers.io())
