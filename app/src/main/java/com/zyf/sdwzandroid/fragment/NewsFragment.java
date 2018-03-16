@@ -38,7 +38,6 @@ public class NewsFragment extends BaseFragment {
     Banner banner;
 
 
-
     @Override
     public int getLayoutId() {
         return R.layout.frgment_news;
@@ -58,24 +57,14 @@ public class NewsFragment extends BaseFragment {
         tabLayout.setupWithViewPager(viewpager);
 
         banner.setImageLoader(new GlideImageLoader());
+        List<Integer  > imgas=new ArrayList<>();
+        imgas.add(R.drawable.a);
+        imgas.add(R.drawable.b);
+        imgas.add(R.drawable.c);
+        banner.setImages(imgas);
+        banner.start();
 
 
-        HttpMethods.getInstance().getRestApi().getBanner()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<List<String>>() {
-            @Override
-            public void accept(List<String> strings) throws Exception {
-                banner.setImages(strings);
-                banner.start();
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                throwable.printStackTrace();
-            }
-        })
-        ;
 
     }
 
