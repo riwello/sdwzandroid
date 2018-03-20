@@ -3,6 +3,7 @@ package com.zyf.sdwzandroid.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,6 +36,9 @@ import io.reactivex.schedulers.Schedulers;
 public class NewsTabFragment extends BaseFragment {
     @BindView(R.id.recyclerview)
     RecyclerView recyclerview;
+    @BindView(R.id.refresh)
+    SwipeRefreshLayout refresh;
+
 
     private String newsType;
     private BaseQuickAdapter<News, BaseViewHolder> mAdapter;
@@ -57,6 +61,13 @@ public class NewsTabFragment extends BaseFragment {
             }
         };
         recyclerview.setAdapter(mAdapter);
+//下拉刷新监听
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getNewsData();
+            }
+        });
     }
 
     int page = 1;
@@ -66,21 +77,7 @@ public class NewsTabFragment extends BaseFragment {
     public void initData() {
 
         //http get 请求获取新闻列表
-        HttpMethods.getInstance().getRestApi().getNews(page, size, newsType)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<News>>() {
-                    @Override
-                    public void accept(List<News> news) throws Exception {
-                        //设置新闻列表数据
-                        mAdapter.replaceData(news);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                    }
-                });
+        getNewsData();
 
         //item点击事件
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -97,10 +94,33 @@ public class NewsTabFragment extends BaseFragment {
         });
     }
 
+
+    public void getNewsData() {
+        HttpMethods.getInstance().getRestApi().getNews(page, size, newsType)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<News>>() {
+                    @Override
+                    public void accept(List<News> news) throws Exception {
+                        //设置新闻列表数据
+                        mAdapter.replaceData(news);
+                        refresh.setRefreshing(false);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
+    ;
+
     //设置新闻类型
     public Fragment setType(String newsType) {
         this.newsType = newsType;
 
         return this;
     }
+
 }
