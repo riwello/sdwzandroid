@@ -1,8 +1,15 @@
 package com.zyf.sdwzandroid.fragment;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -90,7 +97,7 @@ public class PersonalFrament extends BaseFragment {
         tvFileList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(mContext,FileListActivity.class));
+                startActivity(new Intent(mContext, FileListActivity.class));
             }
         });
 
@@ -107,6 +114,7 @@ public class PersonalFrament extends BaseFragment {
                 showSetClassNameDialog();
             }
         });
+
 
     }
 
@@ -192,7 +200,6 @@ public class PersonalFrament extends BaseFragment {
                     }
                 }).show();
     }
-
 
 
 }

@@ -2,6 +2,7 @@ package com.zyf.sdwzandroid;
 
 import android.app.Application;
 
+import com.zyf.sdwzandroid.model.WebSocketService;
 import com.zyf.sdwzandroid.model.entity.User;
 
 /**
@@ -29,5 +30,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance= this;
+
+        WebSocketService.getInstance().connection();
     }
 }
