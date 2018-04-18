@@ -3,6 +3,7 @@ package com.zyf.sdwzandroid.activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -38,6 +39,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        String mode = getIntent().getStringExtra("mode");
+        if (!TextUtils.isEmpty(mode)&&mode.equals("notify")){
+            bottomNavigationBar.selectTab(1);
+        };
         mFragments = new ArrayList<>();
         //初始化底部导航栏
         bottomNavigationBar.addItem(new BottomNavigationItem(R.drawable.ic_news, "首页"))
@@ -120,5 +125,14 @@ public class MainActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String mode = getIntent().getStringExtra("mode");
+        if (!TextUtils.isEmpty(mode)&&mode.equals("notify")){
+            bottomNavigationBar.selectTab(1);
+        };
     }
 }

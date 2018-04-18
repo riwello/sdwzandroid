@@ -12,6 +12,7 @@ import com.zyf.sdwzandroid.R;
 import com.zyf.sdwzandroid.base.BaseActivity;
 import com.zyf.sdwzandroid.model.HttpMethods;
 import com.zyf.sdwzandroid.model.entity.User;
+import com.zyf.sdwzandroid.utils.SPUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +42,10 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void initView() {
 
+        String username = SPUtils.getString(SPUtils.USER_NAME, "");
+        String pwd = SPUtils.getString(SPUtils.PWD, "");
+        etAccount.setText(username);
+        etPassword.setText(pwd);
     }
 
     @Override
@@ -55,7 +60,7 @@ public class LoginActivity extends BaseActivity {
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
     }
@@ -70,8 +75,8 @@ public class LoginActivity extends BaseActivity {
             etAccount.setError("请输入密码");
             return;
         }
-        String account = etAccount.getText().toString();
-        String password = etPassword.getText().toString();
+        final String account = etAccount.getText().toString();
+        final String password = etPassword.getText().toString();
         showLoding();
 
         //http 请求  登录
@@ -83,6 +88,8 @@ public class LoginActivity extends BaseActivity {
                     public void accept(User user) throws Exception {
                         hideLoding();
 
+                        SPUtils.putString(SPUtils.USER_NAME,account);
+                        SPUtils.putString(SPUtils.PWD,password);
                         //设置用户数据到全局变量
                         App.getInstance().setUser(user);
                         //跳转到主页

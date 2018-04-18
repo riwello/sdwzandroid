@@ -76,4 +76,7 @@ public interface RestApi {
 
     @GET("/file/filelist")
     Flowable<List<FileInfo>> getFileList();
+
+    @GET("/notify/delete")
+    Flowable<ResponseBody> deleteNotify(@Query("id") int id);
 }

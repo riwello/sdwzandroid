@@ -2,6 +2,7 @@ package com.zyf.sdwzandroid.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,7 +37,9 @@ public class NotificationFragment extends BaseFragment {
     RecyclerView recyclerview;
     @BindView(R.id.iv_add)
     ImageView ivAdd;
-    BaseQuickAdapter<Notification, BaseViewHolder> adapter;
+    @BindView(R.id.refreshlayout)
+    SwipeRefreshLayout refreshLayout;
+    BaseQuickAdapter<Notification, BaseViewHolder> mAdapter;
 
     @Override
     public int getLayoutId() {
@@ -46,18 +49,25 @@ public class NotificationFragment extends BaseFragment {
     @Override
     public void initView() {
         recyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-        adapter = new BaseQuickAdapter<Notification, BaseViewHolder>(R.layout.item_notification) {
+        mAdapter = new BaseQuickAdapter<Notification, BaseViewHolder>(R.layout.item_notification) {
 
             @Override
             protected void convert(BaseViewHolder helper, Notification item) {
-                helper.setText(R.id.tv_author, "发布者:"+item.getUsername())
+                helper.setText(R.id.tv_author, "发布者:" + item.getUsername())
                         .setText(R.id.tv_content, item.getContent())
                         .setText(R.id.tv_time, new SimpleDateFormat("yyyy-MM-dd HH:mm").format(item.getTime()));
             }
         };
-        recyclerview.setAdapter(adapter);
+        recyclerview.setAdapter(mAdapter);
 
 
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                getNotificationList();
+            }
+        });
         ivAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,6 +75,47 @@ public class NotificationFragment extends BaseFragment {
 
             }
         });
+        mAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+                delete(mAdapter.getItem(position));
+                return true;
+            }
+        });
+
+
+    }
+
+    private void delete(final Notification notification) {
+        new AlertDialog.Builder(mContext)
+                .setTitle("删除消息")
+                .setMessage(notification.getUsername() + " :" + notification.getContent())
+                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        HttpMethods.getInstance().getRestApi().deleteNotify(notification.getId())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Consumer<ResponseBody>() {
+                                    @Override
+                                    public void accept(ResponseBody responseBody) throws Exception {
+                                        getNotificationList();
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        throwable.printStackTrace();
+                                    }
+                                });
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
 
     }
 
@@ -78,26 +129,26 @@ public class NotificationFragment extends BaseFragment {
                     @Override
                     public void onClick(final DialogInterface dialogInterface, int i) {
 
-                        if (editText.length()==0)editText.setError("内容不能为空");
+                        if (editText.length() == 0) editText.setError("内容不能为空");
                         String username = App.getInstance().getUser().getUsername();
                         //http请求  发布通知
-                        HttpMethods.getInstance().getRestApi().addNotification(username,editText.getText().toString())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<ResponseBody>() {
-                            @Override
-                            public void accept(ResponseBody responseBody) throws Exception {
-                                Toast.makeText(mContext, "发布成功", Toast.LENGTH_SHORT).show();
-                                //更新通知列表
-                                getNotificationList();
-                                dialogInterface.dismiss();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                throwable.printStackTrace();
-                            }
-                        })
+                        HttpMethods.getInstance().getRestApi().addNotification(username, editText.getText().toString())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Consumer<ResponseBody>() {
+                                    @Override
+                                    public void accept(ResponseBody responseBody) throws Exception {
+                                        Toast.makeText(mContext, "发布成功", Toast.LENGTH_SHORT).show();
+                                        //更新通知列表
+                                        getNotificationList();
+                                        dialogInterface.dismiss();
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        throwable.printStackTrace();
+                                    }
+                                })
                         ;
                     }
                 })
@@ -118,19 +169,21 @@ public class NotificationFragment extends BaseFragment {
     /**
      * 获取通知列表
      */
-    public void getNotificationList(){
+    public void getNotificationList() {
         HttpMethods.getInstance().getRestApi().getNotificationList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Notification>>() {
                     @Override
                     public void accept(List<Notification> notifications) throws Exception {
-                        adapter.replaceData(notifications);
+                        mAdapter.replaceData(notifications);
+                        refreshLayout.setRefreshing(false);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
+                        refreshLayout.setRefreshing(false);
                     }
                 });
     }

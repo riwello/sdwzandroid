@@ -6,6 +6,15 @@ public class Notification {
     private String username;
     private long time;
     private String content;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Notification(String username, long time, String content) {
         this.username = username;
