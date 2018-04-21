@@ -15,6 +15,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.zyf.sdwzandroid.App;
 import com.zyf.sdwzandroid.R;
+import com.zyf.sdwzandroid.activity.NotifyDetailsActivity;
 import com.zyf.sdwzandroid.base.BaseFragment;
 import com.zyf.sdwzandroid.model.HttpMethods;
 import com.zyf.sdwzandroid.model.entity.Notification;
@@ -81,7 +82,16 @@ public class NotificationFragment extends BaseFragment {
                 return true;
             }
         });
-
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Notification item = mAdapter.getItem(position);
+                startActivity(new Intent(mContext, NotifyDetailsActivity.class)
+                        .putExtra("username",item.getUsername())
+                .putExtra("content",item.getContent())
+                );
+            }
+        });
 
     }
 
