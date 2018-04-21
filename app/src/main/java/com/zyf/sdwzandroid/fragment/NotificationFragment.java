@@ -35,8 +35,7 @@ import okhttp3.ResponseBody;
 public class NotificationFragment extends BaseFragment {
     @BindView(R.id.recyclerview)
     RecyclerView recyclerview;
-    @BindView(R.id.iv_add)
-    ImageView ivAdd;
+
     @BindView(R.id.refreshlayout)
     SwipeRefreshLayout refreshLayout;
     BaseQuickAdapter<Notification, BaseViewHolder> mAdapter;
@@ -68,13 +67,13 @@ public class NotificationFragment extends BaseFragment {
                 getNotificationList();
             }
         });
-        ivAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialog();
-
-            }
-        });
+//        ivAdd.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showDialog();
+//
+//            }
+//        });
         mAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {

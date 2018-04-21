@@ -16,14 +16,5 @@
             android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <ImageView
-        android:id="@+id/iv_add"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="right|bottom"
-        android:layout_marginBottom="25dp"
-        android:layout_marginRight="25dp"
-        android:background="@drawable/circle_red"
-        android:padding="10dp"
-        android:src="@drawable/ic_add" />
+
 </FrameLayout>

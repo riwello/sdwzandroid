@@ -11,9 +11,11 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.zyf.sdwzandroid.App;
 import com.zyf.sdwzandroid.R;
 import com.zyf.sdwzandroid.activity.MainActivity;
+import com.zyf.sdwzandroid.activity.NotifyDetailsActivity;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -147,6 +149,8 @@ public class WebSocketService extends WebSocketListener {
     }
 
     public static void showNotifictionIcon(String msg) {
+        if (TextUtils.isEmpty(msg))return;
+        com.zyf.sdwzandroid.model.entity.Notification notification1 = new Gson().fromJson(msg, com.zyf.sdwzandroid.model.entity.Notification.class);
         Context context = App.getInstance();
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder;
@@ -162,8 +166,9 @@ public class WebSocketService extends WebSocketListener {
             builder = new NotificationCompat.Builder(App.getInstance());
         }
 
-        Intent intent = new Intent(App.getInstance(), MainActivity.class);
-        intent.putExtra("mode","notify");
+        Intent intent = new Intent(App.getInstance(), NotifyDetailsActivity.class);
+        intent.putExtra("username",notification1.getUsername());
+        intent.putExtra("content",notification1.getContent());
         PendingIntent pi = PendingIntent.getActivity(
                 App.getInstance(),
                 100,intent
@@ -173,7 +178,7 @@ public class WebSocketService extends WebSocketListener {
         builder.setSmallIcon(R.drawable.ic_news);
         builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_news));
         builder.setContentTitle("消息通知");   //通知栏标题
-        builder.setContentText(msg);     //通知栏内容
+        builder.setContentText(notification1.getContent());     //通知栏内容
         builder.setContentIntent(pi);
         builder.setTicker("新消息"); //显示在状态栏
         Notification notification = builder.build();

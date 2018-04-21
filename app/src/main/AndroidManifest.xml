@@ -50,6 +50,12 @@
         <activity android:name=".activity.FileListActivity"
             android:label="文件列表"
             />
+        <activity android:name=".activity.NotifyDetailsActivity"
+            android:launchMode="singleTop"
+            android:label="消息详情"
+            />
+
+
     </application>
 
 </manifest>
